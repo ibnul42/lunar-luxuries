@@ -1,0 +1,189 @@
+@import "tailwindcss";
+
+/* ===========================================================================
+   Organic design system — Lunar Luxuries
+   Ported from the design project's `_ds` readme. See README.md §2.
+
+   Rule: never hard-code a hex, font or px value outside this file. If you need
+   a value that isn't here, add a token here first.
+   =========================================================================== */
+
+@theme {
+  /* --- Ground & neutrals ------------------------------------------------ */
+  --color-bg: #f5ead8; /* page ground */
+  --color-surface: #f9f4ed; /* cards, panels, admin sidebar */
+  --color-input: #ebddc5; /* input fill */
+  --color-text: #201e1d; /* primary text */
+
+  /* Secondary/muted text. `muted` is bumped to 0.78 (design had 0.70, which
+     sits under 4.5:1 on --color-surface at 12px). See README §2 a11y note 3. */
+  --color-text-secondary: rgb(32 30 29 / 0.75);
+  --color-muted: rgb(32 30 29 / 0.78);
+  --color-border: rgb(32 30 29 / 0.12);
+  --color-border-strong: rgb(32 30 29 / 0.22);
+
+  /* --- Accent: terracotta ---------------------------------------------- */
+  --color-accent-100: oklch(90.4% 0.0389 76.82);
+  --color-accent-200: oklch(86.09% 0.0531 72.81);
+  --color-accent-300: oklch(80.55% 0.0714 67.67);
+  --color-accent-400: oklch(72.55% 0.0978 60.23);
+  --color-accent-500: oklch(63.32% 0.1282 51.65); /* #c67139 */
+  --color-accent-600: oklch(55.65% 0.1181 51.62);
+  --color-accent-700: oklch(47.98% 0.1079 51.59); /* #8c491a */
+  --color-accent-800: oklch(38.49% 0.0808 51.94);
+  --color-accent-900: oklch(29% 0.0536 52.29); /* #402310 */
+
+  --color-accent: var(--color-accent-500);
+  --color-accent-dark: var(--color-accent-700);
+  --color-accent-deep: var(--color-accent-900);
+
+  /* --- Accent 2: sage --------------------------------------------------- */
+  --color-sage-100: oklch(90.11% 0.0314 85.57);
+  --color-sage-200: oklch(85.46% 0.0369 91.77);
+  --color-sage-300: oklch(79.48% 0.044 99.74);
+  --color-sage-400: oklch(70.85% 0.0542 111.26);
+  --color-sage-500: oklch(60.89% 0.0659 124.55); /* #7a8a5e */
+  --color-sage-600: oklch(54.38% 0.0614 124.6);
+  --color-sage-700: oklch(47.87% 0.0569 124.65); /* #56633f */
+  --color-sage-800: oklch(38.36% 0.0456 124.79);
+  --color-sage-900: oklch(28.85% 0.0342 124.93); /* #272e1b */
+
+  --color-sage: var(--color-sage-500);
+  --color-sage-dark: var(--color-sage-700);
+  --color-sage-deep: var(--color-sage-900);
+
+  /* --- Status ----------------------------------------------------------- */
+  --color-success: var(--color-sage-700);
+  --color-warning: var(--color-accent-600);
+  --color-danger: oklch(50% 0.16 27);
+
+  /* --- Type ------------------------------------------------------------- */
+  --font-display: var(--font-caprasimo), Georgia, serif;
+  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+
+  --text-kicker: 0.6875rem; /* 11px */
+  --text-kicker--line-height: 1;
+  --text-kicker--letter-spacing: 0.22em;
+  --text-h1: 3.5rem; /* 56px, in the 52–60 band */
+  --text-h1--line-height: 1.05;
+  --text-h2: 2rem; /* 32px, in the 30–34 band */
+  --text-h2--line-height: 1.15;
+  --text-wordmark: 1.3125rem; /* 21px */
+  --text-wordmark--line-height: 1;
+
+  --tracking-kicker: 0.22em;
+  --tracking-kicker-wide: 0.28em;
+
+  /* --- Shape ------------------------------------------------------------ */
+  --radius-pill: 999px;
+  --radius-card: 24px;
+  --radius-panel: 28px;
+  --radius-nav: 14px;
+
+  /* --- Elevation -------------------------------------------------------- */
+  --shadow-card: 0 20px 48px rgb(46 43 37 / 0.16);
+  --shadow-panel: 0 12px 32px rgb(46 43 37 / 0.06);
+  --shadow-button: 0 14px 36px rgb(46 43 37 / 0.28);
+
+  /* --- Layout rhythm ----------------------------------------------------
+     These live in the `--spacing-*` namespace, so Tailwind generates the full
+     set of utilities from them: `px-section-x`, `py-section-y`, `gap-gutter`,
+     `h-control`, `size-control-admin`, and so on. */
+  --spacing-section-x: 56px;
+  --spacing-section-y: 72px;
+  --spacing-section-y-lg: 96px;
+  --spacing-gutter: 28px; /* product grids */
+  --spacing-column: 48px; /* footer / column layouts */
+
+  /* Pill buttons and inputs: 48px on the storefront, 44px in admin. */
+  --spacing-control: 48px;
+  --spacing-control-admin: 44px;
+
+  /* Max content width — the design is drawn at 1440. */
+  --spacing-shell: 1440px;
+}
+
+/* ===========================================================================
+   Base
+   =========================================================================== */
+
+@layer base {
+  html {
+    /* The design is a single light theme on cream. No dark variant exists. */
+    color-scheme: light;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-feature-settings: "kern";
+  }
+
+  /* The prototypes set `outline: none` on inputs. Restore a real focus ring
+     everywhere instead. See README §2 a11y note 4. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent-500);
+    outline-offset: 2px;
+    border-radius: inherit;
+  }
+
+  ::selection {
+    background-color: var(--color-accent-200);
+    color: var(--color-accent-900);
+  }
+
+  /* Caprasimo is display-only and ships a single weight. */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ===========================================================================
+   Design-system utilities
+   =========================================================================== */
+
+@utility washed {
+  /* Every content photograph gets this treatment. README §2 → Imagery. */
+  filter: saturate(0.6) contrast(0.85) brightness(1.1) opacity(0.94);
+}
+
+@utility scrim {
+  /* Hero and side-panel overlay, top-to-bottom. */
+  background-image: linear-gradient(
+    to bottom,
+    rgb(46 43 37 / 0.28),
+    rgb(46 43 37 / 0.68)
+  );
+}
+
+@utility kicker {
+  font-size: var(--text-kicker);
+  line-height: 1;
+  letter-spacing: var(--tracking-kicker);
+  text-transform: uppercase;
+  font-family: var(--font-display);
+}
+
+@utility shell {
+  /* Centered 1440px content column with the design's 56px gutters. */
+  margin-inline: auto;
+  max-width: var(--spacing-shell);
+  padding-inline: var(--spacing-section-x);
+  width: 100%;
+}
