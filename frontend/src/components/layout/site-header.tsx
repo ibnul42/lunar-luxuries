@@ -4,10 +4,23 @@ import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
 import { ChevronDown, Heart, Search, ShoppingBag, User } from "lucide-react";
 
+import { buttonClasses } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { CATEGORIES, PRIMARY_NAV, SITE } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 const ICON = { size: 20, strokeWidth: 2.75 } as const;
+
+/** Icon-only actions on the right of the bar. Labels are the accessible names. */
+const ACTIONS = [
+  { href: "/search", label: "Search", icon: Search },
+  { href: "/wishlist", label: "Wishlist", icon: Heart },
+  { href: "/account", label: "Account", icon: User },
+  { href: "/cart", label: "Cart", icon: ShoppingBag },
+] as const;
+
+const NAV_LINK =
+  "py-2 text-[15px] font-semibold text-text transition-colors hover:text-accent-700";
 
 function ShopMenu() {
   const [open, setOpen] = useState(false);
@@ -44,7 +57,7 @@ function ShopMenu() {
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1.5 py-2 text-[15px] font-semibold text-text transition-colors hover:text-accent-700"
+        className={cn("flex items-center gap-1.5", NAV_LINK)}
       >
         Shop
         <ChevronDown
@@ -55,10 +68,10 @@ function ShopMenu() {
         />
       </button>
 
-      <div
+      <Card
         id={panelId}
         hidden={!open}
-        className="absolute top-full left-0 z-50 mt-3 w-64 rounded-card bg-surface p-3 shadow-card"
+        className="absolute top-full left-0 z-50 mt-3 w-64 p-3"
       >
         <ul>
           {CATEGORIES.map((category) => (
@@ -73,7 +86,7 @@ function ShopMenu() {
             </li>
           ))}
         </ul>
-      </div>
+      </Card>
     </div>
   );
 }
@@ -92,45 +105,23 @@ export function SiteHeader() {
         <nav aria-label="Primary" className="hidden items-center gap-8 lg:flex">
           <ShopMenu />
           {PRIMARY_NAV.filter((item) => item.label !== "Shop").map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className="py-2 text-[15px] font-semibold text-text transition-colors hover:text-accent-700"
-            >
+            <Link key={item.label} href={item.href} className={NAV_LINK}>
               {item.label}
             </Link>
           ))}
         </nav>
 
         <div className="flex items-center gap-1">
-          <Link
-            href="/search"
-            aria-label="Search"
-            className="grid size-11 place-items-center rounded-pill text-text transition-colors hover:bg-accent-100"
-          >
-            <Search {...ICON} aria-hidden />
-          </Link>
-          <Link
-            href="/wishlist"
-            aria-label="Wishlist"
-            className="grid size-11 place-items-center rounded-pill text-text transition-colors hover:bg-accent-100"
-          >
-            <Heart {...ICON} aria-hidden />
-          </Link>
-          <Link
-            href="/account"
-            aria-label="Account"
-            className="grid size-11 place-items-center rounded-pill text-text transition-colors hover:bg-accent-100"
-          >
-            <User {...ICON} aria-hidden />
-          </Link>
-          <Link
-            href="/cart"
-            aria-label="Cart"
-            className="grid size-11 place-items-center rounded-pill text-text transition-colors hover:bg-accent-100"
-          >
-            <ShoppingBag {...ICON} aria-hidden />
-          </Link>
+          {ACTIONS.map(({ href, label, icon: Icon }) => (
+            <Link
+              key={href}
+              href={href}
+              aria-label={label}
+              className={buttonClasses({ variant: "quiet", size: "icon" })}
+            >
+              <Icon {...ICON} aria-hidden />
+            </Link>
+          ))}
         </div>
       </div>
     </header>

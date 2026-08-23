@@ -5,16 +5,11 @@ import { cn } from "@/lib/utils";
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
-  /** Visually hide the label but keep it for assistive tech. */
   hideLabel?: boolean;
   hint?: ReactNode;
   error?: string;
 }
 
-/**
- * Pill input. The focus ring comes from the global `:focus-visible` rule in
- * globals.css — do not add `outline-none` here.
- */
 export function Input({
   label,
   hideLabel = false,

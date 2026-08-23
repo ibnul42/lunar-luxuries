@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { FOOTER_NAV, SITE } from "@/lib/site";
 
 export function SiteFooter() {
@@ -22,16 +23,21 @@ export function SiteFooter() {
 
           {/* TODO: wire to the newsletter double opt-in endpoint (README §5). */}
           <form className="flex w-full max-w-md gap-3">
-            <label htmlFor="footer-email" className="sr-only">
-              Email address
-            </label>
-            <input
-              id="footer-email"
-              type="email"
-              required
-              placeholder="you@example.com"
-              className="h-control flex-1 rounded-pill bg-white/95 px-6 text-[15px] text-text placeholder:text-text/55"
-            />
+            <div className="flex-1">
+              <Input
+                id="footer-email"
+                label="Email address"
+                hideLabel
+                type="email"
+                name="email"
+                autoComplete="email"
+                required
+                placeholder="you@example.com"
+                // Sits on the sage band, so the default `bg-input` fill would
+                // disappear into it.
+                className="bg-white/95 placeholder:text-text/55 hover:border-white"
+              />
+            </div>
             <Button type="submit" variant="secondary">
               Subscribe
             </Button>

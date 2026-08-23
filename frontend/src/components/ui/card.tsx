@@ -3,7 +3,6 @@ import type { HTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 type CardProps = HTMLAttributes<HTMLDivElement> & {
-  /** `card` is the storefront elevation; `panel` is the flatter admin surface. */
   elevation?: "card" | "panel" | "flat";
 };
 

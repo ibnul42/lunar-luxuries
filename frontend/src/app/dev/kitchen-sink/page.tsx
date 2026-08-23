@@ -1,8 +1,11 @@
 import { notFound } from "next/navigation";
+import { Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardBody, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { StatusPill, type Status } from "@/components/ui/status-pill";
 import { WashedImage } from "@/components/ui/washed-image";
 import { cn } from "@/lib/utils";
@@ -138,11 +141,15 @@ export default function KitchenSinkPage() {
           <Button>Primary</Button>
           <Button variant="secondary">Secondary</Button>
           <Button variant="ghost">Ghost</Button>
+          <Button variant="quiet">Quiet</Button>
           <Button variant="sage">Sage</Button>
           <Button variant="danger">Danger</Button>
           <Button disabled>Disabled</Button>
           <Button size="sm">Small</Button>
           <Button size="admin">Admin 44px</Button>
+          <Button variant="quiet" size="icon" aria-label="Icon button">
+            <Search size={20} strokeWidth={2.75} aria-hidden />
+          </Button>
         </div>
       </Section>
 
@@ -161,6 +168,24 @@ export default function KitchenSinkPage() {
             label="Postal code"
             defaultValue="not-a-code"
             error="Enter a valid postal code."
+          />
+          <PasswordInput label="Password" placeholder="••••••••" />
+          <PasswordInput
+            label="Confirm password"
+            defaultValue="mismatch"
+            error="Passwords do not match."
+          />
+        </div>
+      </Section>
+
+      <Section title="Checkboxes">
+        <div className="grid max-w-xl gap-4">
+          <Checkbox label="Remember me" />
+          <Checkbox label="Checked by default" defaultChecked />
+          <Checkbox label="Disabled" disabled />
+          <Checkbox
+            label="I agree to the Terms of Service"
+            error="You must accept the terms to continue."
           />
         </div>
       </Section>

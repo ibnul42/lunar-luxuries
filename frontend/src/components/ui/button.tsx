@@ -3,7 +3,7 @@ import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 export type ButtonVariant =
-  "primary" | "secondary" | "ghost" | "sage" | "danger";
+  "primary" | "secondary" | "ghost" | "quiet" | "sage" | "danger";
 export type ButtonSize = "sm" | "md" | "admin" | "icon";
 
 /**
@@ -18,6 +18,8 @@ const VARIANTS: Record<ButtonVariant, string> = {
   secondary:
     "bg-surface text-text border border-border-strong hover:bg-accent-100 active:bg-accent-200",
   ghost: "text-accent-700 hover:bg-accent-100 active:bg-accent-200",
+  /** Chrome that must not compete with the page — header icons, toolbars. */
+  quiet: "text-text hover:bg-accent-100 active:bg-accent-200",
   sage: "bg-sage-700 text-white hover:bg-sage-800 active:bg-sage-900",
   danger: "bg-danger text-white hover:brightness-90 active:brightness-75",
 };
