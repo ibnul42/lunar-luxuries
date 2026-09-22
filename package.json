@@ -2,20 +2,23 @@
   "name": "lunar-luxuries",
   "version": "0.1.0",
   "private": true,
-  "description": "Full-stack e-commerce store on the Organic design system. Root orchestrator — the apps live in frontend/ (and backend/, once it exists).",
+  "description": "Full-stack e-commerce store on the Organic design system. Root orchestrator — the apps live in frontend/ (Next.js storefront + admin) and backend/ (NestJS API).",
   "engines": {
     "node": ">=20.9.0"
   },
   "scripts": {
-    "setup": "npm install && npm --prefix frontend install",
-    "dev": "concurrently -k -n frontend -c cyan \"npm:dev:frontend\"",
+    "setup": "npm install && npm --prefix frontend install && npm --prefix backend install",
+    "dev": "concurrently -k -n frontend,backend -c cyan,magenta \"npm:dev:frontend\" \"npm:dev:backend\"",
     "dev:frontend": "npm --prefix frontend run dev",
-    "build": "npm --prefix frontend run build",
-    "start": "npm --prefix frontend run start",
-    "lint": "npm --prefix frontend run lint",
-    "typecheck": "npm --prefix frontend run typecheck",
-    "format": "npm --prefix frontend run format",
-    "format:check": "npm --prefix frontend run format:check",
+    "dev:backend": "npm --prefix backend run dev",
+    "build": "npm --prefix frontend run build && npm --prefix backend run build",
+    "start": "concurrently -k -n frontend,backend -c cyan,magenta \"npm:start:frontend\" \"npm:start:backend\"",
+    "start:frontend": "npm --prefix frontend run start",
+    "start:backend": "npm --prefix backend run start",
+    "lint": "npm --prefix frontend run lint && npm --prefix backend run lint",
+    "typecheck": "npm --prefix frontend run typecheck && npm --prefix backend run typecheck",
+    "format": "npm --prefix frontend run format && npm --prefix backend run format",
+    "format:check": "npm --prefix frontend run format:check && npm --prefix backend run format:check",
     "check": "npm run typecheck && npm run lint && npm run format:check"
   },
   "devDependencies": {

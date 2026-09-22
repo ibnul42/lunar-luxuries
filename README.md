@@ -33,6 +33,7 @@ The storefront comes up on **http://localhost:3000**.
 | http://localhost:3000 | Storefront — nav, hero, category grid |
 | http://localhost:3000/admin | Admin dashboard shell |
 | http://localhost:3000/dev/kitchen-sink | Every design-system primitive on one page (dev only — 404s in production) |
+| http://localhost:4000/api/health | API liveness check — `{ status, uptime, timestamp }` |
 
 ### Root scripts
 
@@ -43,12 +44,16 @@ to `cd` unless you want to.
 | --- | --- |
 | `npm run setup` | Installs root + frontend dependencies |
 | `npm run dev` | Starts all apps together via `concurrently` |
-| `npm run build` | Production build |
-| `npm run start` | Serves the production build (run `build` first) |
-| `npm run lint` | ESLint |
-| `npm run typecheck` | Regenerates route types, then `tsc --noEmit` |
+| `npm run build` | Production build of both apps |
+| `npm run start` | Serves both production builds (run `build` first) |
+| `npm run lint` | ESLint, both apps |
+| `npm run typecheck` | Regenerates route types, then `tsc --noEmit`, both apps |
 | `npm run format` | Prettier — rewrites files, sorts Tailwind classes |
-| `npm run check` | typecheck + lint + format check — run before pushing |
+| `npm run check` | typecheck + lint + format check across both apps — run before pushing |
+
+Every script except `dev`/`start` chains the two apps with `&&`. To run just one, use
+its scoped script (`npm run dev:frontend`, `npm run dev:backend`) or work inside the
+package directly.
 
 `npm run dev` uses `concurrently -k`, so **if one app crashes the others are shut
 down too** — you never end up with a half-running stack. Output is prefixed per
@@ -57,27 +62,26 @@ app (`[frontend]`).
 To run just one app, either use its script (`npm run dev:frontend`) or work
 inside the package directly (`cd frontend && npm run dev`).
 
-### Adding the backend later
+### Adding another app
 
-The root is already a multi-app orchestrator. When `backend/` exists, add its
-script and list it in `dev`:
-
-```jsonc
-"dev": "concurrently -k -n frontend,backend -c cyan,magenta \"npm:dev:frontend\" \"npm:dev:backend\"",
-"dev:backend": "npm --prefix backend run dev",
-```
-
-Also extend `setup` with `npm --prefix backend install`.
+`backend/` (NestJS API) was added this way and is wired in. To add a third app, add
+its `dev:<name>` script, list it in `dev`, extend `setup` with
+`npm --prefix <name> install`, and — easy to miss — add it to `lint`, `typecheck`,
+`format`, `format:check` and `build` too, or `npm run check` silently stops covering it.
 
 ### Environment
 
 ```bash
 cp frontend/.env.example frontend/.env.local
+cp backend/.env.example backend/.env.local
 ```
 
-Nothing in the frontend requires a secret yet — `.env.local` only overrides
-`NEXT_PUBLIC_SITE_URL`. Real secrets arrive with Phase 1 (see §8); they belong in
-the platform secret store and never in the repo.
+Neither app requires a secret yet. The frontend's `.env.local` only overrides
+`NEXT_PUBLIC_SITE_URL`; the backend's sets `PORT` and `FRONTEND_ORIGIN`, and every
+value has a working default, so the API boots without the file. It validates its
+environment at startup and exits 1 with a readable message on a bad value rather than
+failing mid-request. Real secrets arrive with Phase 1 (see §8); they belong in the
+platform secret store and never in the repo.
 
 ---
 
