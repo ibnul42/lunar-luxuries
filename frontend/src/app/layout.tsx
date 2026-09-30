@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Caprasimo, Figtree } from "next/font/google";
 
 import { SITE } from "@/lib/site";
+import { Providers } from "./providers";
 import "./globals.css";
 
 /** Display face. Caprasimo ships a single weight — 400 is the whole family. */
@@ -44,7 +45,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${caprasimo.variable} ${figtree.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

@@ -6,7 +6,8 @@ import tseslint from "typescript-eslint";
 export default tseslint.config(
   // `eslint.config.mjs` is not in tsconfig's `include`, so the type-aware rules
   // below cannot lint it. Ignore it rather than widen the project.
-  { ignores: ["dist/**", "eslint.config.mjs"] },
+  // `src/generated/` is the Prisma client — `npm run db:generate` rewrites it.
+  { ignores: ["dist/**", "src/generated/**", "eslint.config.mjs"] },
 
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,

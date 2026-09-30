@@ -36,12 +36,18 @@ src/
     (user)/                 Customer routes: nav + footer shell
     (admin)/admin/          Admin routes: sidebar shell, noindex
     dev/kitchen-sink/       Every primitive on one page (404s in production)
+    providers.tsx           React Query provider + session loader (the one root client boundary)
   components/
     layout/                 SiteHeader, SiteFooter, AdminSidebar
-    ui/                     Button, Input, Card, StatusPill, WashedImage
+    ui/                     Button, Input, PasswordInput, Checkbox, Card, StatusPill,
+                            WashedImage, FormAlert
   lib/
     site.ts                 Build-time store config, nav, categories
     utils.ts                cn(), formatPrice()
+    api.ts                  apiFetch() + ApiError — the only place that calls fetch
+    form-errors.ts          Splits an ApiError into field vs form-level messages
+    use-disclosure.ts       Click/keyboard dropdown behaviour, shared by the header menus
+    auth/                   api.ts (calls), hooks.ts (React Query), store.ts (Zustand)
 ```
 
 Route groups (`(user)`, `(admin)`) do not appear in URLs — they exist so
@@ -89,12 +95,33 @@ regress:
 5. Storefront routes start with a **skip link**; admin nav marks the active item
    with `aria-current="page"`.
 
+## Server state and client state
+
+**React Query owns the requests, Zustand owns the answer.** The `/auth/me` query and
+the login/register/logout mutations live in `lib/auth/hooks.ts`; `useSessionStore`
+holds `{ status, user }` for components to read with `useSessionUser()` /
+`useSessionStatus()`.
+
+The write path is one-way: a mutation writes into the **query cache**
+(`applySession`), and `useSessionQuery()` copies that into the store. Nothing else
+calls `setUser`. The store is written in the browser only — writing it during a
+server render would leak one visitor's session into another's request.
+
+`status` starts as `"loading"`, which is what the server renders too. Branch on
+`"anonymous"` for signed-out UI, not on `!user`, or the page flashes a signed-out
+state on every load.
+
+Calls go through `apiFetch()`, which sends `credentials: "include"` so the API's
+session cookie is stored and returned across origins (:3000 → :4000), and normalises
+every failure into an `ApiError` with `status` and `fieldErrors`.
+
 ## Not yet wired
 
-No database, auth, payments or data fetching — those arrive in Phase 1+ per the
-root README. Every image is an intentional placeholder: `WashedImage` renders a
-striped fill when `src` is absent, so missing art is visible rather than silent
-(root README §7 tracks the blocking asset list).
+Google and Apple sign-in (the buttons are disabled — the API will own the OAuth
+callbacks), password reset, `/account`, and everything to do with products,
+payments or data beyond auth. Every image is an intentional placeholder:
+`WashedImage` renders a striped fill when `src` is absent, so missing art is visible
+rather than silent (root README §7 tracks the blocking asset list).
 
 **Responsive behaviour is undesigned** (root README §10, open question 2). The
 shells use sensible breakpoints, but they are a developer's guess, not comps.

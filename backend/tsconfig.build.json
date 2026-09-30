@@ -1,4 +1,8 @@
 {
   "extends": "./tsconfig.json",
+  // Pinned to src/ on its own: tsconfig.json also includes prisma7.config.ts so
+  // it gets typechecked and linted, and without this pin that file would re-root
+  // the emit and move dist/main.js to dist/src/main.js.
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.spec.ts"]
 }

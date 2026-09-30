@@ -1,4 +1,5 @@
 import { Controller, Get } from "@nestjs/common";
+import { SkipThrottle } from "@nestjs/throttler";
 
 /**
  * Liveness probe — deliberately dependency-free. It answers "did the process
@@ -8,7 +9,10 @@ import { Controller, Get } from "@nestjs/common";
  * belongs beside this one (`@nestjs/terminus`), not folded into it: a database
  * outage should fail readiness and drain traffic, not report the process dead
  * and trigger a restart loop.
+ *
+ * Exempt from rate limiting: probes arrive every few seconds from one address.
  */
+@SkipThrottle()
 @Controller("health")
 export class HealthController {
   @Get()

@@ -50,6 +50,10 @@ next-env.d.ts
 prisma/*.db
 prisma/*.db-journal
 prisma/migrations/dev/
+# Generated client — `npm install` (postinstall) and `npm run db:generate` rebuild it.
+# Anchored, unlike the single-segment patterns above: a pattern with an internal
+# slash only matches from the repo root, so "src/generated/prisma/" would not.
+backend/src/generated/
 
 # Testing & coverage
 coverage/

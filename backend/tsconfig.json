@@ -26,6 +26,8 @@
     "incremental": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*"],
+  /* prisma7.config.ts is here so the type-aware ESLint config can lint it.
+     tsconfig.build.json pins itself back to src/ — see the note there. */
+  "include": ["src/**/*", "prisma7.config.ts"],
   "exclude": ["node_modules", "dist"]
 }

@@ -6,7 +6,8 @@ the **Lunar Luxuries** design project on the *Organic* design system.
 - **Design source of truth:** https://claude.ai/design/p/db42182c-6007-4c7d-920a-c115814ba2e0
 - **Scope:** 29 screens — 20 storefront + 9 admin
 - **Status:** Phase 0 in progress. Frontend scaffolded with the design system wired;
-  no database, auth or payments yet.
+  Postgres + Prisma and email/password auth (register, login, logout, session) are in.
+  No OAuth, no payments, no product data yet.
 
 > The `.dc.html` files in the design project are **prototypes of intent**, not production code.
 > They use a small prototype runtime (`<x-dc>`, `sc-for`, `sc-if`, `DCLogic`) and inline styles.
@@ -16,7 +17,9 @@ the **Lunar Luxuries** design project on the *Organic* design system.
 
 ## 0. Running it locally
 
-**Prerequisites:** Node.js **20.9+** (developed on 25.x) and npm 10+.
+**Prerequisites:** Node.js **20.19+ / 22.12+ / 24+** (developed on 25.x — Prisma 7
+requires one of those ranges), npm 10+, and a **PostgreSQL 14+** server you can
+create a database on.
 
 ```bash
 # 1. Install root tooling + the frontend's dependencies
@@ -50,6 +53,8 @@ to `cd` unless you want to.
 | `npm run typecheck` | Regenerates route types, then `tsc --noEmit`, both apps |
 | `npm run format` | Prettier — rewrites files, sorts Tailwind classes |
 | `npm run check` | typecheck + lint + format check across both apps — run before pushing |
+| `npm run db:migrate` | Applies the Prisma migrations, then regenerates the client |
+| `npm run db:studio` | Prisma Studio — browse and edit rows |
 
 Every script except `dev`/`start` chains the two apps with `&&`. To run just one, use
 its scoped script (`npm run dev:frontend`, `npm run dev:backend`) or work inside the
@@ -76,11 +81,23 @@ cp frontend/.env.example frontend/.env.local
 cp backend/.env.example backend/.env.local
 ```
 
-Neither app requires a secret yet. The frontend's `.env.local` only overrides
-`NEXT_PUBLIC_SITE_URL`; the backend's sets `PORT` and `FRONTEND_ORIGIN`, and every
-value has a working default, so the API boots without the file. It validates its
-environment at startup and exits 1 with a readable message on a bad value rather than
-failing mid-request. Real secrets arrive with Phase 1 (see §8); they belong in the
+Then set `DATABASE_URL` in `backend/.env.local` to your Postgres server and create
+the schema:
+
+```bash
+npm run db:migrate    # applies prisma/migrations, creating the database if needed
+```
+
+`DATABASE_URL` is the one value with no default — the API exits rather than guess a
+database. Everything else has one: the frontend's `.env.local` overrides
+`NEXT_PUBLIC_SITE_URL` and `NEXT_PUBLIC_API_URL`, the backend's sets `PORT` and
+`FRONTEND_ORIGIN`. The API validates its environment at startup and exits 1 with a
+readable message rather than failing mid-request.
+
+`FRONTEND_ORIGIN` and `NEXT_PUBLIC_API_URL` have to point at each other: the session
+cookie is issued by the API for that exact origin, and CORS rejects anything else.
+
+Real secrets (OAuth, payments, email) arrive later (see §8); they belong in the
 platform secret store and never in the repo.
 
 ---
@@ -94,7 +111,7 @@ Nothing exists in this repo yet, so we pick the stack. Recommendation and why:
 | Framework | **Next.js 16 + TypeScript** | Storefront needs SEO + fast first paint (server components), admin needs an app shell. One deploy target for both. |
 | Styling | **Tailwind CSS v4** with the Organic tokens as CSS variables | The design is token-driven already; Tailwind v4's `@theme` maps 1:1 onto `--color-*`, `--radius-*`, `--shadow-*`. |
 | Database | **PostgreSQL** | Orders, inventory and money need transactions and real constraints. |
-| Auth | **Auth.js (NextAuth v5)** — credentials + Google + Apple | Login/Register screens show email/password *and* "continue with Google / Apple". |
+| Auth | ~~Auth.js (NextAuth v5)~~ → **own session cookie, issued by the API** | **Superseded.** Auth.js only runs inside Next.js, and the API is a separate service that owns the database. Built instead: Argon2id password hashing, opaque session tokens in an httpOnly cookie, revocable rows in `Session`. Google/Apple are still to come, as OAuth callbacks on the API; §5's `Account` model is still the right shape for them. |
 | Payments | **SSL Commerce** | Covers cards, Google Pay and Apple Pay — exactly the three toggles in Admin → Settings → Payment. |
 | Media | **S3 + CloudFront** (or Cloudinary) behind `next/image` | Every image in the design is an empty `<image-slot>`; we need a real upload + transform pipeline. |
 | Transactional email | **Resend** + React Email | Order confirmation, shipping notice, password reset, newsletter double opt-in. |
@@ -240,7 +257,10 @@ the arithmetic is identical. Never store or compute money as a float.
 
 ```
 User            id, email(unique), passwordHash?, name, emailVerifiedAt, role(CUSTOMER|STAFF|ADMIN), createdAt
-Account         (Auth.js OAuth link: provider, providerAccountId, userId)
+                -- built; email is stored lower-cased, passwordHash is Argon2id and null for OAuth-only accounts
+Session         id, tokenHash(unique), userId, expiresAt, createdAt
+                -- built; the cookie holds the raw token, the table only its SHA-256
+Account         (OAuth link: provider, providerAccountId, userId) -- not built, no OAuth yet
 Address         id, userId, label, firstName, lastName, line1, line2, city, state, postalCode,
                 country, phone, isDefault
 Category        id, slug(unique), name, description, imageUrl, sortOrder, parentId?

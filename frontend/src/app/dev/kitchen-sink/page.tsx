@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardBody, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { FormAlert } from "@/components/ui/form-alert";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { StatusPill, type Status } from "@/components/ui/status-pill";
@@ -187,6 +188,16 @@ export default function KitchenSinkPage() {
             label="I agree to the Terms of Service"
             error="You must accept the terms to continue."
           />
+        </div>
+      </Section>
+
+      <Section title="Form alerts">
+        <div className="grid max-w-xl gap-4">
+          <FormAlert>Incorrect email or password.</FormAlert>
+          <FormAlert>
+            We couldn&apos;t reach the server. Check your connection and try
+            again.
+          </FormAlert>
         </div>
       </Section>
 

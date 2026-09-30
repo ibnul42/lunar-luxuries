@@ -4,6 +4,8 @@ export const SITE = {
   description:
     "Jewelry, home & living, beauty, apparel, accessories and gifts — chosen for how they wear, not how loudly they arrive.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  /** The NestJS API, `/api` prefix included (backend/src/main.ts). */
+  apiUrl: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api",
   supportEmail: "hello@lunarluxuries.com",
   currency: "BDT",
   locale: "en-BD",
