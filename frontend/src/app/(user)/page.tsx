@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { buttonClasses } from "@/components/ui/button";
 import { Card, CardBody, CardTitle } from "@/components/ui/card";
+import { SectionHeading } from "@/components/ui/section-heading";
 import { WashedImage } from "@/components/ui/washed-image";
 import { CATEGORIES, SITE } from "@/lib/site";
 
@@ -39,10 +40,11 @@ export default function HomePage() {
 
       <section className="shell py-section-y">
         <div className="mb-10 flex items-end justify-between gap-6">
-          <div className="space-y-3">
-            <p className="kicker text-accent-700">Browse</p>
-            <h2 className="font-display text-h2">Shop by category</h2>
-          </div>
+          <SectionHeading
+            kicker="Browse"
+            title="Shop by category"
+            className="space-y-3"
+          />
           <Link
             href="/shop"
             className="text-sm font-semibold text-accent-700 hover:text-accent-800"

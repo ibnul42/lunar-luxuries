@@ -1,13 +1,20 @@
 import { notFound } from "next/navigation";
-import { Search } from "lucide-react";
+import Link from "next/link";
+import { Heart, Mail, Package, Search } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
+import { ContactDetail } from "@/components/marketing/contact-detail";
+import { CtaBand } from "@/components/marketing/cta-band";
+import { FeatureCard } from "@/components/marketing/feature-card";
+import { MediaSplit } from "@/components/marketing/media-split";
+import { Button, buttonClasses } from "@/components/ui/button";
 import { Card, CardBody, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormAlert } from "@/components/ui/form-alert";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
+import { SectionHeading } from "@/components/ui/section-heading";
 import { StatusPill, type Status } from "@/components/ui/status-pill";
+import { Textarea } from "@/components/ui/textarea";
 import { WashedImage } from "@/components/ui/washed-image";
 import { cn } from "@/lib/utils";
 
@@ -176,6 +183,32 @@ export default function KitchenSinkPage() {
             defaultValue="mismatch"
             error="Passwords do not match."
           />
+          <Textarea label="Message" placeholder="How can we help?" />
+          <Textarea
+            label="Message with error"
+            rows={3}
+            error="Write a message."
+          />
+        </div>
+      </Section>
+
+      <Section title="Section headings">
+        <div className="space-y-10">
+          <SectionHeading
+            size="page"
+            kicker="Size page · accent"
+            title="Considered goods, chosen slowly."
+          >
+            <p>Lead paragraph, 18px, secondary text.</p>
+          </SectionHeading>
+          <SectionHeading
+            align="center"
+            tone="sage"
+            kicker="Size section · sage · centered"
+            title="Fewer things, made with more care."
+          >
+            <p>Lead paragraph, 16px.</p>
+          </SectionHeading>
         </div>
       </Section>
 
@@ -206,6 +239,47 @@ export default function KitchenSinkPage() {
           {STATUSES.map((status) => (
             <StatusPill key={status} status={status} />
           ))}
+        </div>
+      </Section>
+
+      <Section title="Content blocks">
+        <div className="space-y-12">
+          <MediaSplit
+            image={{ alt: "Media split sample", className: "aspect-4/3" }}
+          >
+            <SectionHeading
+              kicker="Media split"
+              title="Copy first, image second"
+            >
+              <p>Stacks below lg; mediaFirst puts the image left above it.</p>
+            </SectionHeading>
+          </MediaSplit>
+
+          <div className="grid gap-5 lg:grid-cols-2">
+            <FeatureCard icon={Package} title="Feature card · accent">
+              Icon, display title and a short muted paragraph.
+            </FeatureCard>
+            <FeatureCard icon={Heart} tone="sage" title="Feature card · sage">
+              Same card with the second voice.
+            </FeatureCard>
+          </div>
+
+          <dl className="space-y-6">
+            <ContactDetail icon={Mail} label="Contact detail">
+              Icon, label and value — render inside a dl.
+            </ContactDetail>
+          </dl>
+
+          <CtaBand
+            title="CTA band"
+            actions={
+              <Link href="#" className={buttonClasses()}>
+                Primary action
+              </Link>
+            }
+          >
+            Terracotta radial panel that closes a content page.
+          </CtaBand>
         </div>
       </Section>
 

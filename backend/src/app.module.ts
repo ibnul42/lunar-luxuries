@@ -5,6 +5,7 @@ import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 
 import { AuthModule } from "./auth/auth.module";
 import { validate } from "./config/env.validation";
+import { ContactModule } from "./contact/contact.module";
 import { HealthModule } from "./health/health.module";
 import { PrismaModule } from "./prisma/prisma.module";
 
@@ -28,6 +29,7 @@ import { PrismaModule } from "./prisma/prisma.module";
     PrismaModule,
     HealthModule,
     AuthModule,
+    ContactModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

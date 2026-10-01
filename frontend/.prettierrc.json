@@ -4,5 +4,5 @@
   "trailingComma": "all",
   "plugins": ["prettier-plugin-tailwindcss"],
   "tailwindStylesheet": "./src/app/globals.css",
-  "tailwindFunctions": ["cn", "buttonClasses"]
+  "tailwindFunctions": ["cn", "buttonClasses", "controlClasses"]
 }

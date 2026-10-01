@@ -7,6 +7,18 @@ export const SITE = {
   /** The NestJS API, `/api` prefix included (backend/src/main.ts). */
   apiUrl: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000/api",
   supportEmail: "hello@lunarluxuries.com",
+  foundedYear: 2019,
+  /**
+   * PLACEHOLDER — copied from the design, which lists a Portland address and a
+   * fictional 555 number. Replace with the real studio before launch (README §7).
+   */
+  studio: {
+    address: ["148 Foundry Lane", "Portland, OR 97209"],
+    phone: "(503) 555-0148",
+    /** E.164, for the `tel:` link. */
+    phoneHref: "+15035550148",
+    hours: ["Mon–Fri, 9am–5pm", "Weekends by appointment"],
+  },
   currency: "BDT",
   locale: "en-BD",
 } as const;

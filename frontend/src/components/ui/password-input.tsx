@@ -1,24 +1,17 @@
 "use client";
 
-import type { InputHTMLAttributes, ReactNode } from "react";
-import { useId, useState } from "react";
+import type { InputHTMLAttributes } from "react";
+import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
-import { cn } from "@/lib/utils";
+import { controlClasses, Field, type FieldProps, useField } from "./field";
 
-export interface PasswordInputProps extends Omit<
-  InputHTMLAttributes<HTMLInputElement>,
-  "type"
-> {
-  label: string;
-  hideLabel?: boolean;
-  hint?: ReactNode;
-  error?: string;
-}
+export interface PasswordInputProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, "type">, FieldProps {}
 
 export function PasswordInput({
   label,
-  hideLabel = false,
+  hideLabel,
   hint,
   error,
   className,
@@ -26,38 +19,23 @@ export function PasswordInput({
   ...props
 }: PasswordInputProps) {
   const [visible, setVisible] = useState(false);
-  const reactId = useId();
-  const inputId = id ?? reactId;
-  const describedBy = error
-    ? `${inputId}-error`
-    : hint
-      ? `${inputId}-hint`
-      : undefined;
+  const { controlId, controlProps } = useField({ id, hint, error });
 
   return (
-    <div className="flex flex-col gap-2">
-      <label
-        htmlFor={inputId}
-        className={cn(
-          "text-[13px] font-semibold text-text",
-          hideLabel && "sr-only",
-        )}
-      >
-        {label}
-      </label>
-
+    <Field
+      controlId={controlId}
+      label={label}
+      hideLabel={hideLabel}
+      hint={hint}
+      error={error}
+    >
       <div className="relative">
         <input
-          id={inputId}
+          {...controlProps}
           type={visible ? "text" : "password"}
-          aria-invalid={error ? true : undefined}
-          aria-describedby={describedBy}
-          className={cn(
-            "h-control w-full rounded-pill bg-input py-0 pr-14 pl-6 text-[15px] text-text",
-            "placeholder:text-muted",
-            "border border-transparent transition-colors",
-            "hover:border-border-strong",
-            error && "border-danger",
+          className={controlClasses(
+            "h-control rounded-pill py-0 pr-14 pl-6",
+            error,
             className,
           )}
           {...props}
@@ -77,16 +55,6 @@ export function PasswordInput({
           )}
         </button>
       </div>
-
-      {error ? (
-        <p id={`${inputId}-error`} className="px-6 text-[13px] text-danger">
-          {error}
-        </p>
-      ) : hint ? (
-        <p id={`${inputId}-hint`} className="px-6 text-[13px] text-muted">
-          {hint}
-        </p>
-      ) : null}
-    </div>
+    </Field>
   );
 }

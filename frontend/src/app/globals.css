@@ -68,6 +68,10 @@
   --text-h1--line-height: 1.05;
   --text-h2: 2rem; /* 32px, in the 30–34 band */
   --text-h2--line-height: 1.15;
+  /* Interior page titles (About, Contact). The design draws them at 42–46px,
+     a step below the homepage hero's H1. */
+  --text-title: 2.75rem; /* 44px */
+  --text-title--line-height: 1.15;
   --text-wordmark: 1.3125rem; /* 21px */
   --text-wordmark--line-height: 1;
 
@@ -91,6 +95,11 @@
      set of utilities from them: `px-section-x`, `py-section-y`, `gap-gutter`,
      `h-control`, `size-control-admin`, and so on. */
   --spacing-section-x: 56px;
+  /* The design is desktop-only (README §10 q2). These are derived, not drawn:
+     56px gutters leave a 375px phone with barely 260px of content. */
+  --spacing-section-x-sm: 20px;
+  --spacing-section-x-md: 32px;
+  --spacing-section-y-sm: 48px;
   --spacing-section-y: 72px;
   --spacing-section-y-lg: 96px;
   --spacing-gutter: 28px; /* product grids */
@@ -182,9 +191,18 @@
 }
 
 @utility shell {
-  /* Centered 1440px content column with the design's 56px gutters. */
+  /* Centered 1440px content column. Gutters step up to the design's 56px at
+     the `lg` breakpoint; below it they are derived (see --spacing-section-x-sm). */
   margin-inline: auto;
   max-width: var(--spacing-shell);
-  padding-inline: var(--spacing-section-x);
+  padding-inline: var(--spacing-section-x-sm);
   width: 100%;
+
+  @media (width >= 48rem) {
+    padding-inline: var(--spacing-section-x-md);
+  }
+
+  @media (width >= 64rem) {
+    padding-inline: var(--spacing-section-x);
+  }
 }

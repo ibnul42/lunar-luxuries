@@ -57,3 +57,18 @@ model Session {
   @@index([userId])
   @@map("sessions")
 }
+
+/// A message from the storefront's Contact form — the support inbox until a
+/// mailer or helpdesk exists to forward it to (README §3).
+model ContactMessage {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  name      String
+  /// Lower-cased and trimmed by the DTO, like `User.email`.
+  email     String
+  subject   String?
+  message   String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@index([createdAt])
+  @@map("contact_messages")
+}
