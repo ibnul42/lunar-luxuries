@@ -332,7 +332,7 @@ export function SiteHeader({
           <MobileMenu categories={categories} />
           <Link
             href="/"
-            className="font-display text-[18px] tracking-tight text-text sm:text-wordmark"
+            className="font-display text-[18px] tracking-tight whitespace-nowrap text-text sm:text-wordmark"
           >
             {SITE.name}
           </Link>

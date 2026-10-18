@@ -127,6 +127,9 @@
   --spacing-sidebar: 256px;
   /* The design's form column (Login/Register max-width 380px). */
   --spacing-form: 380px;
+  /* Homepage hero: the category rail and its subcategory flyout. */
+  --spacing-hero-rail: 290px;
+  --spacing-hero-flyout: 230px;
 }
 
 /* ===========================================================================
@@ -195,6 +198,18 @@
     to bottom,
     rgb(46 43 37 / 0.28),
     rgb(46 43 37 / 0.68)
+  );
+}
+
+@utility hero-glow {
+  /* The homepage hero's ground until real photography exists (README §7) —
+     the design's own placeholder, a warm terracotta radial. */
+  background-image: radial-gradient(
+    120% 90% at 50% 15%,
+    #f6c9a0 0%,
+    #e28a4f 38%,
+    #a85a2e 70%,
+    #402310 100%
   );
 }
 
