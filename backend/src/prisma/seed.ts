@@ -592,14 +592,12 @@ async function seedOrders(
       subtotalCents >= freeShippingThresholdCents ? 0 : flatRateCents;
     const [firstName, ...rest] = customer.name.split(" ");
 
-    const shippedAt =
-      status === "PROCESSING"
-        ? null
-        : new Date(placedAt.getTime() + 86_400_000);
+    // Never in the future: the newest orders were placed hours ago.
+    const after = (days: number) =>
+      new Date(Math.min(placedAt.getTime() + days * 86_400_000, Date.now()));
+    const shippedAt = status === "PROCESSING" ? null : after(1);
     const deliveredAt =
-      status === "DELIVERED" || status === "REFUNDED"
-        ? new Date(placedAt.getTime() + 4 * 86_400_000)
-        : null;
+      status === "DELIVERED" || status === "REFUNDED" ? after(4) : null;
 
     await prisma.order.create({
       data: {
