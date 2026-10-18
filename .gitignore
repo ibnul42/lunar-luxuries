@@ -105,3 +105,6 @@ Desktop.ini
 tmp/
 temp/
 *.local
+
+# Design prototypes (local reference only)
+/design/
