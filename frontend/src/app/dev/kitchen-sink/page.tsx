@@ -106,6 +106,7 @@ const SAMPLE_PRODUCTS: ProductCard[] = [
   slug: "#",
   image: null,
   category: { name: "Home & Living", slug: "home-living" },
+  quickAddVariantId: null,
 }));
 
 function Section({

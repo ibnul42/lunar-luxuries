@@ -23,6 +23,8 @@ export interface ProductCard {
   category: { name: string; slug: string };
   isNewArrival: boolean;
   inStock: boolean;
+  /** Set for single-variant products, which a list can add to the cart directly. */
+  quickAddVariantId: string | null;
 }
 
 export interface CategoryNode {

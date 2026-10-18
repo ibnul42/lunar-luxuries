@@ -76,6 +76,8 @@ export default async function ProductPage({
     category: { name: category.name, slug: category.slug },
     isNewArrival: false,
     inStock: product.variants.some((v) => v.inStock),
+    quickAddVariantId:
+      product.variants.length === 1 ? product.variants[0]!.id : null,
   };
 
   const crumbs = [

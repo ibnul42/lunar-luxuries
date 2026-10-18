@@ -27,7 +27,7 @@ export const productCardSelect = {
     orderBy: { sortOrder: "asc" },
     take: 1,
   },
-  variants: { select: { stockQty: true } },
+  variants: { select: { id: true, stockQty: true } },
 } satisfies Prisma.ProductSelect;
 
 type ProductCardRow = Prisma.ProductGetPayload<{
@@ -44,6 +44,11 @@ export interface ProductCard {
   category: { name: string; slug: string };
   isNewArrival: boolean;
   inStock: boolean;
+  /**
+   * Set when the product has exactly one variant, so a list can add it to the
+   * cart directly. Products with options need their page to pick one.
+   */
+  quickAddVariantId: string | null;
 }
 
 export function toProductCard(row: ProductCardRow): ProductCard {
@@ -58,6 +63,7 @@ export function toProductCard(row: ProductCardRow): ProductCard {
     isNewArrival: row.isNewArrival,
     inStock:
       row.status === "ACTIVE" && row.variants.some((v) => v.stockQty > 0),
+    quickAddVariantId: row.variants.length === 1 ? row.variants[0].id : null,
   };
 }
 
