@@ -63,3 +63,26 @@ export class LoginDto {
   @IsBoolean()
   remember?: boolean;
 }
+
+export class ForgotPasswordDto {
+  @Transform(normalizeEmail)
+  @IsEmail({}, { message: "Enter a valid email address." })
+  @MaxLength(254, { message: "Enter a valid email address." })
+  email!: string;
+}
+
+export class ResetPasswordDto {
+  @IsString()
+  @IsNotEmpty({ message: "This reset link is incomplete." })
+  @MaxLength(100, { message: "This reset link is invalid." })
+  token!: string;
+
+  @IsString()
+  @MinLength(MIN_PASSWORD_LENGTH, {
+    message: `Use at least ${MIN_PASSWORD_LENGTH} characters.`,
+  })
+  @MaxLength(MAX_PASSWORD_LENGTH, {
+    message: `Use at most ${MAX_PASSWORD_LENGTH} characters.`,
+  })
+  password!: string;
+}

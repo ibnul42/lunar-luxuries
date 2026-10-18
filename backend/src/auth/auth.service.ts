@@ -14,7 +14,7 @@ import type { RegisterDto } from "./auth.dto";
 import { type PublicUser, publicUserSelect, toPublicUser } from "./public-user";
 
 /** One message for unknown email, wrong password and OAuth-only accounts. */
-const INVALID_CREDENTIALS = "Incorrect email or password.";
+export const INVALID_CREDENTIALS = "Incorrect email or password.";
 const EMAIL_TAKEN = "An account with this email already exists.";
 
 @Injectable()

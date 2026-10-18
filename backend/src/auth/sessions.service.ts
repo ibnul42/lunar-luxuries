@@ -53,6 +53,19 @@ export class SessionsService {
     return session.user;
   }
 
+  /**
+   * Signs a user out everywhere — after a password reset or change. `keep`
+   * spares the browser that made the change.
+   */
+  async revokeAllFor(userId: string, keep?: string): Promise<void> {
+    await this.prisma.session.deleteMany({
+      where: {
+        userId,
+        ...(keep ? { NOT: { tokenHash: hashToken(keep) } } : {}),
+      },
+    });
+  }
+
   /** Idempotent — revoking an unknown or already-revoked token is a no-op. */
   async revoke(token: string): Promise<void> {
     await this.prisma.session.deleteMany({

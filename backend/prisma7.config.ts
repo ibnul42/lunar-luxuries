@@ -10,6 +10,9 @@ export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
+    // Run by `prisma migrate reset` and `prisma db seed`. The seed lives in
+    // src/ so `nest build` compiles it — no TypeScript runner needed.
+    seed: "npm run db:seed",
   },
   datasource: {
     // Read directly rather than through `env()`, which throws when unset —

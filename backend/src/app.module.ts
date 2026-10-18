@@ -3,11 +3,20 @@ import { ConfigModule } from "@nestjs/config";
 import { APP_GUARD } from "@nestjs/core";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 
+import { AccountModule } from "./account/account.module";
+import { AdminModule } from "./admin/admin.module";
+import { AuditModule } from "./audit/audit.service";
 import { AuthModule } from "./auth/auth.module";
+import { CartModule } from "./cart/cart.module";
+import { CatalogModule } from "./catalog/catalog.module";
 import { validate } from "./config/env.validation";
 import { ContactModule } from "./contact/contact.module";
 import { HealthModule } from "./health/health.module";
+import { NewsletterModule } from "./newsletter/newsletter.module";
+import { OrdersModule } from "./orders/orders.module";
 import { PrismaModule } from "./prisma/prisma.module";
+import { SettingsModule } from "./settings/settings.module";
+import { WishlistModule } from "./wishlist/wishlist.module";
 
 @Module({
   imports: [
@@ -27,9 +36,18 @@ import { PrismaModule } from "./prisma/prisma.module";
       errorMessage: "Too many attempts. Wait a minute and try again.",
     }),
     PrismaModule,
+    SettingsModule,
+    AuditModule,
     HealthModule,
     AuthModule,
     ContactModule,
+    NewsletterModule,
+    CatalogModule,
+    CartModule,
+    WishlistModule,
+    AccountModule,
+    OrdersModule,
+    AdminModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
