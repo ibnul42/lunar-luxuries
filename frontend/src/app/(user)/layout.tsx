@@ -1,7 +1,26 @@
 import { SiteFooter } from "@/components/layout/site-footer";
-import { SiteHeader } from "@/components/layout/site-header";
+import { type NavCategory, SiteHeader } from "@/components/layout/site-header";
+import { getCategories } from "@/lib/catalog";
+import { CATEGORIES } from "@/lib/site";
 
-export default function StorefrontLayout({ children }: LayoutProps<"/">) {
+/**
+ * The live category list feeds the header's Shop menu and the footer, so an
+ * admin hiding or adding a category shows up everywhere. If the API is down
+ * the shell still renders, from the static list — the page itself will say
+ * what went wrong.
+ */
+async function navCategories(): Promise<readonly NavCategory[]> {
+  try {
+    const tree = await getCategories();
+    return tree.map(({ slug, name }) => ({ slug, name }));
+  } catch {
+    return CATEGORIES;
+  }
+}
+
+export default async function StorefrontLayout({ children }: LayoutProps<"/">) {
+  const categories = await navCategories();
+
   return (
     <>
       <a
@@ -10,11 +29,11 @@ export default function StorefrontLayout({ children }: LayoutProps<"/">) {
       >
         Skip to content
       </a>
-      <SiteHeader />
+      <SiteHeader categories={categories} />
       <main id="main" className="flex-1">
         {children}
       </main>
-      <SiteFooter />
+      <SiteFooter categories={categories} />
     </>
   );
 }

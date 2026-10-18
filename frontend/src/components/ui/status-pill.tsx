@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-/** Order + product statuses from README §5. */
+/** Order, product and category statuses from README §5. */
 export type Status =
   | "PROCESSING"
   | "SHIPPED"
@@ -9,7 +9,8 @@ export type Status =
   | "CANCELLED"
   | "ACTIVE"
   | "DRAFT"
-  | "OUT_OF_STOCK";
+  | "OUT_OF_STOCK"
+  | "HIDDEN";
 
 /**
  * Text sits on a tinted fill from the same ramp (700/800 on 100/200), which
@@ -24,6 +25,7 @@ const TONES: Record<Status, string> = {
   ACTIVE: "bg-sage-200 text-sage-800",
   DRAFT: "bg-black/8 text-text/80",
   OUT_OF_STOCK: "bg-accent-200 text-accent-900",
+  HIDDEN: "bg-black/8 text-text/80",
 };
 
 const LABELS: Record<Status, string> = {
@@ -35,6 +37,7 @@ const LABELS: Record<Status, string> = {
   ACTIVE: "Active",
   DRAFT: "Draft",
   OUT_OF_STOCK: "Out of stock",
+  HIDDEN: "Hidden",
 };
 
 export function StatusPill({

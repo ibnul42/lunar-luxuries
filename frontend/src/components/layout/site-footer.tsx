@@ -1,18 +1,37 @@
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { FOOTER_NAV, SITE } from "@/lib/site";
 
-export function SiteFooter() {
+import { NewsletterForm } from "./newsletter-form";
+import type { NavCategory } from "./site-header";
+
+export function SiteFooter({
+  categories,
+}: {
+  categories: readonly NavCategory[];
+}) {
+  const columns = [
+    {
+      heading: "Shop",
+      links: [
+        { href: "/shop", label: "All products" },
+        ...categories.map((c) => ({
+          href: `/shop?category=${c.slug}`,
+          label: c.name,
+        })),
+      ],
+    },
+    ...FOOTER_NAV,
+  ];
+
   return (
     <footer className="mt-auto">
       {/* Email signup band — sage, the system's second voice. */}
       <section className="bg-sage-700 text-white">
-        <div className="shell flex flex-col items-center gap-6 py-16 text-center">
+        <div className="shell flex flex-col items-center gap-6 py-14 text-center lg:py-16">
           <div className="space-y-3">
             <p className="kicker text-white/80">Stay in touch</p>
-            <h2 className="font-display text-h2 text-white">
+            <h2 className="font-display text-[26px] leading-tight text-white sm:text-h2">
               Slow news, twice a month
             </h2>
             <p className="max-w-lg text-[15px] text-white/85">
@@ -21,34 +40,14 @@ export function SiteFooter() {
             </p>
           </div>
 
-          {/* TODO: wire to the newsletter double opt-in endpoint (README §5). */}
-          <form className="flex w-full max-w-md gap-3">
-            <div className="flex-1">
-              <Input
-                id="footer-email"
-                label="Email address"
-                hideLabel
-                type="email"
-                name="email"
-                autoComplete="email"
-                required
-                placeholder="you@example.com"
-                // Sits on the sage band, so the default `bg-input` fill would
-                // disappear into it.
-                className="bg-white/95 placeholder:text-text/55 hover:border-white"
-              />
-            </div>
-            <Button type="submit" variant="secondary">
-              Subscribe
-            </Button>
-          </form>
+          <NewsletterForm id="footer-email" />
         </div>
       </section>
 
       <div className="bg-surface">
-        <div className="shell py-section-y">
-          <div className="grid gap-column md:grid-cols-4">
-            <div className="space-y-4">
+        <div className="shell py-section-y-sm lg:py-section-y">
+          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-column">
+            <div className="space-y-4 sm:col-span-2 lg:col-span-1">
               <p className="font-display text-wordmark text-text">
                 {SITE.name}
               </p>
@@ -61,7 +60,7 @@ export function SiteFooter() {
               </a>
             </div>
 
-            {FOOTER_NAV.map((column) => (
+            {columns.map((column) => (
               <nav
                 key={column.heading}
                 aria-labelledby={`footer-${column.heading}`}
@@ -88,8 +87,11 @@ export function SiteFooter() {
             ))}
           </div>
 
-          <div className="mt-14 border-t border-border pt-8 text-sm text-muted">
-            © {new Date().getFullYear()} {SITE.name}. All rights reserved.
+          <div className="mt-12 flex flex-col gap-2 border-t border-border pt-8 text-sm text-muted sm:flex-row sm:justify-between lg:mt-14">
+            <span>
+              © {new Date().getFullYear()} {SITE.name}. All rights reserved.
+            </span>
+            <span>Made with care, everywhere.</span>
           </div>
         </div>
       </div>

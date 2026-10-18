@@ -1,22 +1,34 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Heart, Mail, Package, Search } from "lucide-react";
+import { Heart, Mail, Package, Search, ShoppingBag } from "lucide-react";
 
 import { ContactDetail } from "@/components/marketing/contact-detail";
 import { CtaBand } from "@/components/marketing/cta-band";
 import { FeatureCard } from "@/components/marketing/feature-card";
 import { MediaSplit } from "@/components/marketing/media-split";
+import { Price } from "@/components/catalog/price";
+import { ProductGrid, ProductTile } from "@/components/catalog/product-tile";
+import { Accordion, AccordionItem } from "@/components/ui/accordion";
 import { Button, buttonClasses } from "@/components/ui/button";
 import { Card, CardBody, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { EmptyState } from "@/components/ui/empty-state";
 import { FormAlert } from "@/components/ui/form-alert";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { Select } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
+import { StarRating } from "@/components/ui/star-rating";
 import { StatusPill, type Status } from "@/components/ui/status-pill";
+import { Switch } from "@/components/ui/switch";
+import { Tag } from "@/components/ui/tag";
 import { Textarea } from "@/components/ui/textarea";
 import { WashedImage } from "@/components/ui/washed-image";
+import type { ProductCard } from "@/lib/catalog";
 import { cn } from "@/lib/utils";
+
+import { InteractiveDemos } from "./interactive-demos";
 
 export const metadata = {
   title: "Kitchen sink",
@@ -56,7 +68,45 @@ const STATUSES: Status[] = [
   "ACTIVE",
   "DRAFT",
   "OUT_OF_STOCK",
+  "HIDDEN",
 ];
+
+const SAMPLE_PRODUCTS: ProductCard[] = [
+  {
+    name: "Ceramic Pour-Over Set",
+    priceCents: 650_000,
+    compareAtPriceCents: 820_000,
+    isNewArrival: false,
+    inStock: true,
+  },
+  {
+    name: "Sculpted Brass Vase",
+    priceCents: 700_000,
+    compareAtPriceCents: null,
+    isNewArrival: true,
+    inStock: true,
+  },
+  {
+    name: "Linen Throw Blanket",
+    priceCents: 820_000,
+    compareAtPriceCents: null,
+    isNewArrival: false,
+    inStock: false,
+  },
+  {
+    name: "Hand-Poured Soy Candle",
+    priceCents: 380_000,
+    compareAtPriceCents: null,
+    isNewArrival: false,
+    inStock: true,
+  },
+].map((p, i) => ({
+  ...p,
+  id: String(i),
+  slug: "#",
+  image: null,
+  category: { name: "Home & Living", slug: "home-living" },
+}));
 
 function Section({
   title,
@@ -239,6 +289,94 @@ export default function KitchenSinkPage() {
           {STATUSES.map((status) => (
             <StatusPill key={status} status={status} />
           ))}
+        </div>
+      </Section>
+
+      <Section title="Select, switch, tag, rating, price">
+        <div className="grid max-w-3xl gap-8 md:grid-cols-2">
+          <Select
+            label="Sort by"
+            options={[
+              { value: "featured", label: "Featured" },
+              { value: "price-asc", label: "Price: low to high" },
+            ]}
+          />
+          <Select
+            label="Status (admin)"
+            shape="admin"
+            options={[
+              { value: "ACTIVE", label: "Active" },
+              { value: "DRAFT", label: "Draft" },
+            ]}
+          />
+          <Input label="Admin input" shape="admin" placeholder="Store name" />
+          <div className="space-y-4">
+            <Switch
+              label="International shipping"
+              description="Ship outside Bangladesh."
+              defaultChecked
+            />
+            <Switch label="Apple Pay" />
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Tag>Save 20%</Tag>
+            <Tag tone="sage">Default</Tag>
+            <Tag tone="neutral">Draft</Tag>
+            <Tag tone="overlay">New</Tag>
+          </div>
+          <div className="flex flex-wrap items-center gap-6">
+            <StarRating value={4.8} />
+            <Price cents={650_000} compareAtCents={820_000} size="lg" />
+            <Price cents={380_000} />
+          </div>
+        </div>
+      </Section>
+
+      <Section title="Interactive controls">
+        <InteractiveDemos />
+      </Section>
+
+      <Section title="Accordion">
+        <Accordion className="max-w-2xl">
+          <AccordionItem
+            title="How long does shipping take?"
+            name="faq"
+            defaultOpen
+          >
+            Native details/summary — works without JavaScript.
+          </AccordionItem>
+          <AccordionItem title="Can I return an item?" name="faq">
+            A shared name makes items exclusive.
+          </AccordionItem>
+        </Accordion>
+      </Section>
+
+      <Section title="Product tiles">
+        <ProductGrid>
+          {SAMPLE_PRODUCTS.map((product) => (
+            <ProductTile key={product.id} product={product} />
+          ))}
+        </ProductGrid>
+      </Section>
+
+      <Section title="Empty state & skeleton">
+        <div className="grid gap-gutter lg:grid-cols-2">
+          <EmptyState
+            icon={ShoppingBag}
+            title="Your cart is empty"
+            action={
+              <Link href="#" className={buttonClasses()}>
+                Shop all
+              </Link>
+            }
+          >
+            Icon, title, copy and one action.
+          </EmptyState>
+          <div className="space-y-3">
+            <Skeleton className="h-40" />
+            <Skeleton className="h-6 w-2/3" />
+            <Skeleton className="h-6 w-1/3" />
+          </div>
         </div>
       </Section>
 

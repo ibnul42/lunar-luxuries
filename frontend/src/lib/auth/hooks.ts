@@ -9,7 +9,14 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 
-import { fetchSession, login, logout, register, type SessionUser } from "./api";
+import {
+  adminLogin,
+  fetchSession,
+  login,
+  logout,
+  register,
+  type SessionUser,
+} from "./api";
 import { useSessionStore } from "./store";
 
 export const sessionQueryKey = ["auth", "session"] as const;
@@ -52,12 +59,35 @@ export function useSessionQuery(): void {
   }, [data, isError, setUser]);
 }
 
+/**
+ * Everything fetched as the previous visitor — the guest cart above all,
+ * which the API has just merged into the account — is stale now. Never the
+ * session query itself (see `useLogout` for why).
+ */
+function refetchVisitorData(queryClient: QueryClient): void {
+  void queryClient.invalidateQueries({
+    predicate: (query) => query.queryKey[0] !== sessionQueryKey[0],
+  });
+}
+
 export function useLogin() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: login,
     onSuccess: (user) => {
       applySession(queryClient, user);
+      refetchVisitorData(queryClient);
+    },
+  });
+}
+
+export function useAdminLogin() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: adminLogin,
+    onSuccess: (user) => {
+      applySession(queryClient, user);
+      refetchVisitorData(queryClient);
     },
   });
 }
@@ -68,8 +98,15 @@ export function useRegister() {
     mutationFn: register,
     onSuccess: (user) => {
       applySession(queryClient, user);
+      refetchVisitorData(queryClient);
     },
   });
+}
+
+/** For a profile edit: the API answers with the updated user. */
+export function useApplySession() {
+  const queryClient = useQueryClient();
+  return (user: SessionUser | null) => applySession(queryClient, user);
 }
 
 export function useLogout() {
@@ -82,9 +119,11 @@ export function useLogout() {
       // observer's result would still hold the old user, so the store would
       // never hear about the sign-out and the header would stay signed in.
       applySession(queryClient, null);
-      // Then drop what was fetched as the outgoing user — orders, wishlist,
-      // addresses once they exist — so the next sign-in cannot read them.
-      queryClient.removeQueries({
+      // Then clear what was fetched as the outgoing user — cart, orders,
+      // wishlist, addresses — so the next sign-in cannot read them. `reset`,
+      // not `remove`: the header's cart badge is a live observer, and removing
+      // its query would leave it holding the old cart (the same trap as above).
+      void queryClient.resetQueries({
         predicate: (query) => query.queryKey[0] !== sessionQueryKey[0],
       });
     },

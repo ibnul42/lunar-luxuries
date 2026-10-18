@@ -21,6 +21,10 @@
   --color-muted: rgb(32 30 29 / 0.78);
   --color-border: rgb(32 30 29 / 0.12);
   --color-border-strong: rgb(32 30 29 / 0.22);
+  /* Admin category sub-rows and other nested fills. */
+  --color-subtle: #f2e9da;
+  /* Dims the page behind a dialog or the mobile menu. */
+  --color-overlay: rgb(32 30 29 / 0.42);
 
   /* --- Accent: terracotta ---------------------------------------------- */
   --color-accent-100: oklch(90.4% 0.0389 76.82);
@@ -84,11 +88,15 @@
   --radius-panel: 28px;
   --radius-nav: 14px;
   --radius-check: 6px; /* checkbox / radio — the only square controls */
+  --radius-thumb: 12px; /* gallery and list thumbnails, 10–16px in the design */
 
   /* --- Elevation -------------------------------------------------------- */
   --shadow-card: 0 20px 48px rgb(46 43 37 / 0.16);
   --shadow-panel: 0 12px 32px rgb(46 43 37 / 0.06);
   --shadow-button: 0 14px 36px rgb(46 43 37 / 0.28);
+  /* Product tile photo — lighter than a card, per the Shop design. */
+  --shadow-tile: 0 16px 40px rgb(46 43 37 / 0.14);
+  --shadow-tile-hover: 0 24px 52px rgb(46 43 37 / 0.2);
 
   /* --- Layout rhythm ----------------------------------------------------
      These live in the `--spacing-*` namespace, so Tailwind generates the full
@@ -111,6 +119,14 @@
 
   /* Max content width — the design is drawn at 1440. */
   --spacing-shell: 1440px;
+  /* Sticky storefront header height; sticky asides sit just below it. */
+  --spacing-header: 80px;
+  --spacing-header-mobile: 64px;
+  /* Shop filter column and admin sidebar widths. */
+  --spacing-facets: 240px;
+  --spacing-sidebar: 256px;
+  /* The design's form column (Login/Register max-width 380px). */
+  --spacing-form: 380px;
 }
 
 /* ===========================================================================

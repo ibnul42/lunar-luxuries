@@ -3,13 +3,17 @@ import type { InputHTMLAttributes } from "react";
 import { controlClasses, Field, type FieldProps, useField } from "./field";
 
 export interface InputProps
-  extends InputHTMLAttributes<HTMLInputElement>, FieldProps {}
+  extends InputHTMLAttributes<HTMLInputElement>, FieldProps {
+  /** 14px-radius, 44px admin control instead of the storefront pill. */
+  shape?: "pill" | "admin";
+}
 
 export function Input({
   label,
   hideLabel,
   hint,
   error,
+  shape = "pill",
   className,
   id,
   ...props
@@ -27,7 +31,9 @@ export function Input({
       <input
         {...controlProps}
         className={controlClasses(
-          "h-control rounded-pill px-6",
+          shape === "pill"
+            ? "h-control rounded-pill px-6"
+            : "h-control-admin rounded-nav px-4 text-sm",
           error,
           className,
         )}

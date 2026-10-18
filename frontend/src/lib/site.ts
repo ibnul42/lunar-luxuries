@@ -23,6 +23,11 @@ export const SITE = {
   locale: "en-BD",
 } as const;
 
+/**
+ * Fallback for the nav when the API can't be reached. The live list comes from
+ * `GET /categories` in `(user)/layout.tsx`, so hiding or adding a category in
+ * the admin console shows up in the header and footer.
+ */
 export const CATEGORIES = [
   { slug: "jewelry", name: "Jewelry" },
   { slug: "home-living", name: "Home & Living" },
@@ -34,19 +39,12 @@ export const CATEGORIES = [
 
 export const PRIMARY_NAV = [
   { href: "/shop", label: "Shop" },
-  { href: "/shop?filter=new", label: "New Arrivals" },
+  { href: "/shop?collection=new", label: "New Arrivals" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ] as const;
 
 export const FOOTER_NAV = [
-  {
-    heading: "Shop",
-    links: CATEGORIES.map((c) => ({
-      href: `/shop?category=${c.slug}`,
-      label: c.name,
-    })),
-  },
   {
     heading: "Support",
     links: [
@@ -60,6 +58,7 @@ export const FOOTER_NAV = [
     heading: "Company",
     links: [
       { href: "/about", label: "About" },
+      { href: "/account", label: "Your account" },
       { href: "/privacy", label: "Privacy" },
       { href: "/terms", label: "Terms" },
     ],

@@ -50,6 +50,27 @@ export async function login(input: LoginInput): Promise<SessionUser> {
   return user;
 }
 
+/** Refuses customer accounts before any session is created. */
+export async function adminLogin(input: LoginInput): Promise<SessionUser> {
+  const { user } = await apiFetch<UserResponse>("/auth/admin/login", {
+    json: input,
+  });
+  return user;
+}
+
+export async function requestPasswordReset(email: string): Promise<void> {
+  await apiFetch<void>("/auth/forgot-password", { json: { email } });
+}
+
+export async function resetPassword(input: {
+  token: string;
+  password: string;
+}): Promise<void> {
+  await apiFetch<void>("/auth/reset-password", { json: input });
+}
+
+export const STAFF_ROLES: readonly Role[] = ["STAFF", "ADMIN"];
+
 /** Registration signs the new account straight in. */
 export async function register(input: RegisterInput): Promise<SessionUser> {
   const { user } = await apiFetch<UserResponse>("/auth/register", {
