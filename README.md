@@ -5,9 +5,11 @@ the **Lunar Luxuries** design project on the *Organic* design system.
 
 - **Design source of truth:** https://claude.ai/design/p/db42182c-6007-4c7d-920a-c115814ba2e0
 - **Scope:** 29 screens — 20 storefront + 9 admin
-- **Status:** Phase 0 in progress. Frontend scaffolded with the design system wired;
-  Postgres + Prisma and email/password auth (register, login, logout, session) are in.
-  No OAuth, no payments, no product data yet.
+- **Status:** 27 of 29 screens built and mobile-responsive — every storefront and admin screen
+  except **Checkout** and **Order Confirmation**, which wait on the payment provider (§10 q1).
+  Catalogue, server-side cart (guest + member, merged on sign-in), wishlist, account, order
+  tracking, password reset and the full admin console run against Postgres. Not yet: payments,
+  OAuth, photo uploads (no media storage), sending email (reset links are logged in dev), tests.
 
 > The `.dc.html` files in the design project are **prototypes of intent**, not production code.
 > They use a small prototype runtime (`<x-dc>`, `sc-for`, `sc-if`, `DCLogic`) and inline styles.
@@ -33,8 +35,8 @@ The storefront comes up on **http://localhost:3000**.
 
 | Route | What it is |
 | --- | --- |
-| http://localhost:3000 | Storefront — nav, hero, category grid |
-| http://localhost:3000/admin | Admin dashboard shell |
+| http://localhost:3000 | Storefront |
+| http://localhost:3000/admin | Admin console (sign in at `/admin/login`) |
 | http://localhost:3000/dev/kitchen-sink | Every design-system primitive on one page (dev only — 404s in production) |
 | http://localhost:4000/api/health | API liveness check — `{ status, uptime, timestamp }` |
 
@@ -54,7 +56,13 @@ to `cd` unless you want to.
 | `npm run format` | Prettier — rewrites files, sorts Tailwind classes |
 | `npm run check` | typecheck + lint + format check across both apps — run before pushing |
 | `npm run db:migrate` | Applies the Prisma migrations, then regenerates the client |
+| `npm run db:seed` | **Replaces** catalogue, carts, wishlists, reviews and orders with dev data; upserts the demo accounts |
 | `npm run db:studio` | Prisma Studio — browse and edit rows |
+
+After `db:migrate`, run `npm run db:seed` for a working store. It prints the demo logins:
+`admin@lunarluxuries.com` / `lunar-admin-2026` (admin console) and `jordan@example.com` /
+`lunar-demo-2026` (customer with orders, addresses and a wishlist). It refuses to run with
+`NODE_ENV=production`, and because it runs `nest build` first, a running `npm run dev` API restarts.
 
 Every script except `dev`/`start` chains the two apps with `&&`. To run just one, use
 its scoped script (`npm run dev:frontend`, `npm run dev:backend`) or work inside the
@@ -318,6 +326,11 @@ shipping on, cards + Google Pay on, Apple Pay off.
 > $75.00 free-shipping threshold are all USD figures carried over from the design. They are *not*
 > valid BDT amounts — ৳75 is well under a dollar. Someone with market knowledge needs to set real
 > BDT prices before the seed script is written; do not straight-convert at spot rate and ship it.
+>
+> *Interim:* `backend/src/prisma/seed.ts` uses rough round **placeholder** taka (e.g. ৳3,800 for the
+> candle) and `settings.defaults.ts` a ৳150 flat rate / ৳5,000 threshold, all marked as placeholders.
+> Replace them there — and in Admin → Settings / Products for an existing database — once real
+> prices are set.
 
 ---
 
