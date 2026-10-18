@@ -31,8 +31,9 @@ const VARIANTS = {
   },
   /** Admin Settings and Account: pill segments on a tinted track. */
   segmented: {
-    list: "inline-flex max-w-full gap-1 overflow-x-auto rounded-pill bg-input p-1",
-    tab: "h-10 shrink-0 rounded-pill px-5 text-sm font-semibold whitespace-nowrap transition-colors",
+    list: "flex w-full gap-1 overflow-x-auto rounded-pill bg-input p-1 sm:inline-flex sm:w-auto",
+    // Equal shares of the track on phones; natural widths from `sm`.
+    tab: "h-10 flex-1 rounded-pill px-3 text-sm font-semibold whitespace-nowrap transition-colors sm:flex-none sm:px-5",
     active: "bg-surface text-text shadow-panel",
     idle: "text-muted hover:text-text",
   },
